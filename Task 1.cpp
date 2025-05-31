@@ -1,12 +1,15 @@
 #include <iostream>
 #include <string>
 #include <Windows.h>
+#include <exception>
 
-class bad_length
+class bad_length : public std::exception
 {
 public:
-    const char* message;
-    bad_length(const char* msg) : message(msg) {}
+    const char* what() const override
+    {
+        return "Вы ввели слово запретной длины! До свидания";
+    }
 };
 
 int function(std::string str, int forbidden_length)
@@ -14,7 +17,7 @@ int function(std::string str, int forbidden_length)
     int length = str.length();
     if (length == forbidden_length)
     {
-        throw bad_length("Вы ввели слово запретной длины! До свидания");
+        throw bad_length();
     }
     return length;
 }
@@ -42,7 +45,7 @@ int main()
         }
         catch (const bad_length& e)
         {
-            std::cout << e.message << std::endl;
+            std::cout << e.what() << std::endl;
             break;
         }
     }
